@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 
+const { getLog } = require('probot/lib/helpers/get-log')
 const Settings = require('../../../lib/settings')
 
 describe('Settings Tests', () => {
@@ -13,6 +14,9 @@ describe('Settings Tests', () => {
     return new Settings(false, stubContext, mockRepo, config, mockRef, mockSubOrg)
   }
 
+  const log = getLog()
+  log.level = process.env.LOG_LEVEL ?? 'info'
+
   beforeEach(() => {
     stubContext = {
       payload: {
@@ -21,17 +25,7 @@ describe('Settings Tests', () => {
         }
       },
       octokit: jest.fn(),
-      log: {
-        debug: jest.fn((msg) => {
-          console.log(msg)
-        }),
-        info: jest.fn((msg) => {
-          console.log(msg)
-        }),
-        error: jest.fn((msg) => {
-          console.log(msg)
-        })
-      }
+      log
     }
 
     mockRepo = jest.fn()
