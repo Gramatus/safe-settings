@@ -9,7 +9,11 @@ const env = require('./lib/env')
 
 let deploymentConfig
 
-
+/**
+ * @import { Probot, ApplicationFunctionOptions, ProbotOctokit } from "probot"
+ * @param {Probot} robot
+ * @param {ApplicationFunctionOptions} probotOptions
+ */
 module.exports = (robot, { getRouter }, Settings = require('./lib/settings')) => {
   let appName = 'safe-settings'
   let appSlug = 'safe-settings'
@@ -455,15 +459,15 @@ module.exports = (robot, { getRouter }, Settings = require('./lib/settings')) =>
           } else {
             robot.log.error(error)
           }
-        } 
+        }
 
       } catch (error) {
         if (error.status === 404) {
           //nop
-        } else {  
+        } else {
           robot.log.error(error)
         }
-      } 
+      }
       return
     } else {
       robot.log.debug('Repository Edited by a Human')
@@ -663,7 +667,7 @@ module.exports = (robot, { getRouter }, Settings = require('./lib/settings')) =>
       syncInstallation()
     })
   }
-  
+
   // Get info about the app
   info()
 
