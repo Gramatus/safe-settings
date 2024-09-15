@@ -1,8 +1,11 @@
 const { Probot } = require('probot')
 const plugin = require('../../index')
+/** @import { ProbotOctokit } from "probot" */
 
 describe.skip('plugin', () => {
-  let app, event, sync, github
+  let app, event, sync
+  /** @type {InstanceType<typeof ProbotOctokit>} */
+  let github
 
   beforeEach(() => {
     class Octokit {

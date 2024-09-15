@@ -9,6 +9,11 @@ const env = require('./lib/env')
 
 let deploymentConfig
 
+/**
+ * @import { Probot, ApplicationFunctionOptions, ProbotOctokit } from "probot"
+ * @param {Probot} robot
+ * @param {ApplicationFunctionOptions} probotOptions
+ */
 module.exports = (robot, { getRouter }, Settings = require('./lib/settings')) => {
   let appSlug = 'safe-settings'
   async function syncAllSettings (nop, context, repo = context.repo(), ref) {
