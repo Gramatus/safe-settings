@@ -17,7 +17,7 @@ let deploymentConfig
 module.exports = (robot, _, Settings = require('./lib/settings')) => {
   let appName = 'safe-settings'
   let appSlug = 'safe-settings'
-  async function syncAllSettings (nop, context, repo = context.repo(), ref) {
+  async function syncAllSettings(nop, context, repo = context.repo(), ref) {
     try {
       deploymentConfig = await loadYamlFileSystem()
       robot.log.debug(`deploymentConfig is ${JSON.stringify(deploymentConfig)}`)
@@ -46,7 +46,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     }
   }
 
-  async function syncSubOrgSettings (nop, context, suborg, repo = context.repo(), ref) {
+  async function syncSubOrgSettings(nop, context, suborg, repo = context.repo(), ref) {
     try {
       deploymentConfig = await loadYamlFileSystem()
       robot.log.debug(`deploymentConfig is ${JSON.stringify(deploymentConfig)}`)
@@ -71,7 +71,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     }
   }
 
-  async function syncSettings (nop, context, repo = context.repo(), ref) {
+  async function syncSettings(nop, context, repo = context.repo(), ref) {
     try {
       deploymentConfig = await loadYamlFileSystem()
       robot.log.debug(`deploymentConfig is ${JSON.stringify(deploymentConfig)}`)
@@ -96,7 +96,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     }
   }
 
-  async function renameSync (nop, context, repo = context.repo(), rename, ref) {
+  async function renameSync(nop, context, repo = context.repo(), rename, ref) {
     try {
       deploymentConfig = await loadYamlFileSystem()
       robot.log.debug(`deploymentConfig is ${JSON.stringify(deploymentConfig)}`)
@@ -105,7 +105,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
       const config = Object.assign({}, deploymentConfig, runtimeConfig)
       const renameConfig = Object.assign({}, config, rename)
       robot.log.debug(`config for ref ${ref} is ${JSON.stringify(config)}`)
-      return Settings.sync(nop, context, repo, renameConfig, ref )
+      return Settings.sync(nop, context, repo, renameConfig, ref)
     } catch (e) {
       if (nop) {
         let filename = env.SETTINGS_FILE_PATH
@@ -127,7 +127,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
    *
    * @return The parsed YAML file
    */
-  async function loadYamlFileSystem () {
+  async function loadYamlFileSystem() {
     if (deploymentConfig === undefined) {
       const deploymentConfigPath = env.DEPLOYMENT_CONFIG_FILE
       if (fs.existsSync(deploymentConfigPath)) {
@@ -139,7 +139,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     return deploymentConfig
   }
 
-  function getAllChangedSubOrgConfigs (payload) {
+  function getAllChangedSubOrgConfigs(payload) {
     const settingPattern = new Glob(`${env.CONFIG_PATH}/suborgs/*.yml`)
     // Changes will be an array of files that were added
     const added = payload.commits.map(c => {
@@ -163,7 +163,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     return configs
   }
 
-  function getAllChangedRepoConfigs (payload, owner) {
+  function getAllChangedRepoConfigs(payload, owner) {
     const settingPattern = new Glob(`${env.CONFIG_PATH}/repos/*.yml`)
     // Changes will be an array of files that were added
     const added = payload.commits.map(c => {
@@ -186,7 +186,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     return configs
   }
 
-  function getChangedRepoConfigName (glob, files, owner) {
+  function getChangedRepoConfigName(glob, files, owner) {
     const modifiedFiles = files.filter(s => {
       robot.log.debug(JSON.stringify(s))
       return (s.search(glob) >= 0)
@@ -197,7 +197,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     })
   }
 
-  function getChangedSubOrgConfigName (glob, files) {
+  function getChangedSubOrgConfigName(glob, files) {
     const modifiedFiles = files.filter(s => {
       robot.log.debug(JSON.stringify(s))
       return (s.search(glob) >= 0)
@@ -209,7 +209,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     })
   }
 
-  async function createCheckRun (context, pull_request, head_sha) {
+  async function createCheckRun(context, pull_request, head_sha) {
     const { payload } = context
     // robot.log.debug(`Check suite was requested! for ${context.repo()} ${pull_request.number} ${head_sha} ${head_branch}`)
     const res = await context.octokit.checks.create({
@@ -238,7 +238,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
   }
 
 
-  async function syncInstallation () {
+  async function syncInstallation() {
     robot.log.trace('Fetching installations')
     const github = await robot.auth()
 
@@ -399,7 +399,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
   })
 
   robot.on('repository.renamed', async context => {
-    if (env.BLOCK_REPO_RENAME_BY_HUMAN!== 'true') {
+    if (env.BLOCK_REPO_RENAME_BY_HUMAN !== 'true') {
       robot.log.debug(`"env.BLOCK_REPO_RENAME_BY_HUMAN" is 'false' by default. Repo rename is not managed by Safe-settings. Continue with the default behavior.`)
       return
     }
@@ -418,7 +418,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
       const newPath = `.github/repos/${payload.repository.name}.yml`
       robot.log.debug(oldPath)
       try {
-        const repofile =  await context.octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+        const repofile = await context.octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
           owner: payload.repository.owner.login,
           repo: env.ADMIN_REPO,
           path: oldPath,
@@ -447,7 +447,7 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
               owner: payload.repository.owner.login,
               repo: env.ADMIN_REPO,
               path: newPath,
-              name:  `${payload.repository.name}.yml`,
+              name: `${payload.repository.name}.yml`,
               content: content,
               message: `Repo Renamed and safe-settings renamed the file from ${payload.changes.repository.name.from} to ${payload.repository.name}`,
               sha: repofile.data.sha,
@@ -472,8 +472,8 @@ module.exports = (robot, _, Settings = require('./lib/settings')) => {
     } else {
       robot.log.debug('Repository Edited by a Human')
       // Create a repository config to reset the name back to the previous name
-      const rename = {repository: { name: payload.changes.repository.name.from, oldname: payload.repository.name}}
-      const repo = {repo: payload.changes.repository.name.from, owner: payload.repository.owner.login}
+      const rename = { repository: { name: payload.changes.repository.name.from, oldname: payload.repository.name } }
+      const repo = { repo: payload.changes.repository.name.from, owner: payload.repository.owner.login }
       return renameSync(false, context, repo, rename)
     }
   })
