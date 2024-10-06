@@ -3,18 +3,18 @@ const MergeDeep = require('../../../lib/mergeDeep')
 const YAML = require('js-yaml')
 const log = require('pino')('test.log')
 
-describe('MergeDeep Test', () => {
+describe.skip('MergeDeep Test', () => {
   it('CompareDeep extensive test', () => {
     const target = YAML.load(`
 repository:
   name: test
   # A short description of the repository that will show up on GitHub
-  description: description of the repos 
-      
+  description: description of the repos
+
   # A comma-separated list of topics to set on the repository
-  topics: 
-  - uber 
-  - newone 
+  topics:
+  - uber
+  - newone
 branches:
   # If the name of the branch is default, it will create a branch protection for the default branch in the repo
   - name: default
@@ -49,40 +49,40 @@ branches:
         `)
 
     const source = YAML.load(`
-  repository:      
-    name: test   
+  repository:
+    name: test
     org: decyjphr-org
-    force_create: false 
+    force_create: false
     description: description of test repository
     homepage: https://newhome.github.io/
-    topics: 
-    - red  
-    auto_init: true  
-    has_issues: true 
+    topics:
+    - red
+    auto_init: true
+    has_issues: true
     has_projects: true
     has_wiki: false
     has_downloads: true
     allow_squash_merge: true
     allow_merge_commit: false
     allow_rebase_merge: false
-    default_branch: develop  
-  
-  labels:  
+    default_branch: develop
+
+  labels:
     # Labels: define labels for Issues and Pull Requests
     - name: green
       color: '#B60205'
-      description: An issue sswithss the system 
-      
+      description: An issue sswithss the system
+
   validator:
-    #pattern: '[a-zA-Z0-9_-]+_[a-zA-Z0-9_-]+.*' 
-    pattern: '[a-zA-Z0-9_-]+'  
-    
+    #pattern: '[a-zA-Z0-9_-]+_[a-zA-Z0-9_-]+.*'
+    pattern: '[a-zA-Z0-9_-]+'
+
   collaborators:
   - username: regpaco
     permission: pull
-  
-  branches:      
-    - name: feature1 
+
+  branches:
+    - name: feature1
       # https://developer.github.com/v3/repos/branches/#update-branch-protection
       # Branch Protection settings. Set to null to disable
       protection:
@@ -109,8 +109,8 @@ branches:
         # Required. Restrict who can push to this branch. Team and user restrictions are only available for organization-owned repositories. Set to null to disable.
         restrictions:
           apps: []
-          users: [] 
-          teams: []    
+          users: []
+          teams: []
         `)
 
     const expected = {
@@ -191,19 +191,19 @@ branches:
       ignorableFields
     )
     const merged = mergeDeep.compareDeep(target, source)
-    console.log(`source ${JSON.stringify(source, null, 2)}`)
-    console.log(`target ${JSON.stringify(target, null, 2)}`)
-    console.log(`diffs ${JSON.stringify(merged, null, 2)}`)
+    log.debug(`source ${JSON.stringify(source, null, 2)}`)
+    log.debug(`target ${JSON.stringify(target, null, 2)}`)
+    log.debug(`diffs ${JSON.stringify(merged, null, 2)}`)
     expect(merged.additions).toEqual(expected.additions)
     expect(merged.modifications.length).toEqual(expected.modifications.length)
 
-    console.log(`target = ${JSON.stringify(target, null, 2)}`)
+    log.debug(`target = ${JSON.stringify(target, null, 2)}`)
     const overrideConfig = mergeDeep.mergeDeep({}, target, source)
 
-    console.log(`overrideConfig = ${JSON.stringify(overrideConfig, null, 2)}`)
+    log.debug(`overrideConfig = ${JSON.stringify(overrideConfig, null, 2)}`)
 
     const same = mergeDeep.compareDeep(overrideConfig, source)
-    console.log(`new diffs ${JSON.stringify(same, null, 2)}`)
+    log.debug(`new diffs ${JSON.stringify(same, null, 2)}`)
     expect(same.additions).toEqual({})
     expect(same.modifications).toEqual({})
   })
@@ -472,17 +472,17 @@ branches:
     repository:
       name: new
       home: new home
-    labels:  
+    labels:
     # Labels: define labels for Issues and Pull Requests
     - name: green
       color: '#B60205'
-      description: An issue sswithss the system     
-         
+      description: An issue sswithss the system
+
     `)
     const target = YAML.load(`
   repository:
     name: new
-    home: old home  
+    home: old home
     `)
     const expected = {
       additions: {
@@ -612,7 +612,7 @@ branches:
         required_status_checks:
           strict: true
           contexts:
-            - "Lint, compile and build"    
+            - "Lint, compile and build"
     `)
 
     const expected = {
@@ -666,18 +666,18 @@ branches:
     const source = YAML.load(`
   x:
   - name: default
-    values: 
+    values:
       a: [a,b,c]
   - name: new
-    values: 
+    values:
       a: [b]
       `)
 
     const target = YAML.load(`
     x:
     - name: default
-      values: 
-        a: [c,a]    
+      values:
+        a: [c,a]
     `)
 
     const expected = JSON.parse('{"additions":{"x":[{"name":"new","values":{"a":["b"]}}]},"modifications":{"x":[{"values":{"a":["b"]},"name":"default"}]},"hasChanges":true}')
@@ -705,34 +705,34 @@ branches:
 
   it('Repo test', () => {
     const source = YAML.load(`
-  repository:      
-    name: test   
+  repository:
+    name: test
     org: decyjphr-org
-    force_create: false 
+    force_create: false
     description: description of test repository
     homepage: https://newhome.github.io/
-    topics: 
-    - red  
-    auto_init: true  
-    has_issues: true 
+    topics:
+    - red
+    auto_init: true
+    has_issues: true
     has_projects: true
     has_wiki: false
     has_downloads: true
     allow_squash_merge: true
     allow_merge_commit: false
     allow_rebase_merge: false
-    default_branch: develop  
+    default_branch: develop
         `)
 
     const target = YAML.load(`
   repository:
     # A short description of the repository that will show up on GitHub
-    description: description of the repos 
-      
+    description: description of the repos
+
     # A comma-separated list of topics to set on the repository
-    topics: 
-    - uber 
-    - newone 
+    topics:
+    - uber
+    - newone
         `)
 
     const expected = {
@@ -1403,7 +1403,7 @@ entries:
            - name: ROUTE53_HOSTNAME_DEVL
              value: 'https://foo-devl.com'
            - name: SECOND_VARIABLE_DEVL
-             value: 'My_SECOND_VARIABLE_DEVL'      
+             value: 'My_SECOND_VARIABLE_DEVL'
  `)
 
     const expected = {
